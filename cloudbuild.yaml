@@ -1,13 +1,5 @@
 steps:
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'rustapi-$SHORT_SHA', '.']
-
-  - name: 'gcr.io/cloud-builders/docker'
-    id: api-build
-    args:
-      - 'build'
-      - '-t'
-      - 'gcr.io/ergon-services/github.com/ergonglobal/tride_rust-$SHORT_SHA'
-      - '.'
-    options:
-      machineType: 'E2_HIGHCPU_8'
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'rustapi-$SHORT_SHA', '.']
+options:
+ machineType: 'E2_HIGHCPU_8'
