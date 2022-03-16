@@ -1,36 +1,22 @@
-use actix_web::{get, web, App, HttpServer, Responder};
-use mongodb::{options::ClientOptions, Client};
-use std::{sync::*, env};
-mod logs_handlers;
+extern crate redis;
+use redis::Commands;
 
-#[get("/hello/{name}")]
-async fn greet(name: web::Path<String>) -> impl Responder {
-    let mut arr = Vec::new();
-    for i in 0..10000 + 1 {
-        let mut sum: u128 = 0;
-        for j in 0..i + 1 {
-            sum = sum + j;
-        }
-        arr.push(sum);
-    }
-    let total = arr.len();
-    format!("Hello {total}!")
+fn fetch_an_integer() -> redis::RedisResult<String> {
+    // connect to redis
+    let client = redis::Client::open("redis://10.124.1.14/")?;
+    let mut con = client.get_connection()?;
+    // throw away the result, just make sure it does not fail
+    let _ : () = con.set("my_key", "42")?;
+    // read back the key and return it.  Because the return value
+    // from the function is a result for integer this will automatically
+    // convert into one.
 
+    con.get("my_key")
+
+    
 }
 
-#[tokio::main]
-async fn main() -> std::io::Result<()> {
-    let mut client_options = ClientOptions::parse("mongodb+srv://admin:ergon2021@dev.cwik3.mongodb.net/ergonglobal?retryWrites=true&w=majority
-    ").await.unwrap();
-    client_options.app_name = Some("MS".to_string());
-    let client = web::Data::new(Mutex::new(Client::with_options(client_options).unwrap()));
-    HttpServer::new(move || {
-        App::new()
-            .app_data(client.clone())
-            .service(greet)
-            .service(web::scope("/api").configure(logs_handlers::scoped_config))
-    })
-    .bind("0.0.0.0:8000")?
-    .run()
-    .await
+fn main() {
+    let key  =  fetch_an_integer();
+    println!("key: {}", key.unwrap());
 }
