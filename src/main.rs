@@ -12,7 +12,7 @@ async fn redirect(req: AuthorizationService) -> HttpResponse {
 
     
     let client = Client::new();
-    let mut res = client.get("https://tride-rust-gixholtv4q-df.a.run.app/".to_owned() + &req.path);
+    let res = client.get("10.0.10.57:8088".to_owned() + &req.path);
 
     let res = res
         .header("USER", user)
