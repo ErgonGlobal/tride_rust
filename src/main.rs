@@ -7,10 +7,10 @@ use reqwest::{Client, StatusCode, Url};
 
 async fn redirect(req: AuthorizationService) -> HttpResponse {
     let user = req.user;
-    println!("{}", "http://data-service.default.svc.cluster.local".to_owned() + &req.path);
+    println!("{}", "10.0.10.57:8088".to_owned() + &req.path);
 
     let client = Client::new();
-    let res = client.get("http://data-service.default.svc.cluster.local".to_owned() + &req.path);
+    let res = client.get("http://10.0.10.57:8088".to_owned() + &req.path);
 
     let res = res
         .header("USER", user)
