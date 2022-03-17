@@ -5,14 +5,12 @@ mod middlewares;
 use crate::middlewares::auth::AuthorizationService;
 use reqwest::{Client, StatusCode, Url};
 
-
 async fn redirect(req: AuthorizationService) -> HttpResponse {
     let user = req.user;
-    println!("{}",  "10.0.10.57:8088".to_owned() + &req.path);
+    println!("{}", "http://data-service.default.svc.cluster.local".to_owned() + &req.path);
 
-    
     let client = Client::new();
-    let res = client.get("http://10.0.10.57:8088".to_owned() + &req.path);
+    let res = client.get("http://data-service.default.svc.cluster.local".to_owned() + &req.path);
 
     let res = res
         .header("USER", user)
@@ -23,17 +21,7 @@ async fn redirect(req: AuthorizationService) -> HttpResponse {
         .await
         .expect("failed to get payload");
 
-    return   HttpResponse::Ok().json(res);
-    
-
-/*
-    return HttpResponse::Found()
-        .status(http::StatusCode::TEMPORARY_REDIRECT)
-        .append_header(("Location", "https://tride-rust-gixholtv4q-df.a.run.app".to_owned() + &req.path))
-
-        .finish();
-        */
-        
+    return HttpResponse::Ok().json(res);
 }
 
 #[actix_web::main]
